@@ -1,0 +1,14 @@
+<div class="container">
+  <%= @cocktail.name %>
+</div>
+
+<% @cocktail.doses.each do |d|  %>
+    <li><%= d.ingredient.name %> : <%= d.description %> | <%= link_to "Delete", dose_path(d), method: :delete, data: { confirm: "Are you sure?" }  %></li>
+  <% end %>
+
+<%= simple_form_for([ @cocktail, @dose ]) do |form| %>
+    <%= form.association :ingredient %>
+    <%= form.input :description %>
+    <%= form.button :submit, class: "btn btn-success" %>
+<% end %>
+
