@@ -1,20 +1,17 @@
 <div class="background-page">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <%= image_tag "logo.png", alt: "Creative cocktails", style: 'height:50px;width:50px'%>
+      <%= image_tag "logo.png", alt: "Creative cocktails", style: 'height:60px;width:60px'%>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <%= link_to "Create your cocktail", new_cocktail_path, class: "btn btn-success border-radius" %>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        <%= simple_form_for('', url: cocktails_path, method: :get) do |f| %>
+          <div class="form-inline d-flex justify-content-center md-form form-sm mt-0 px-2">
+              <%= f.input :query, label: false, placeholder: "name or ingredient" %>
+              <%= f.submit value: "Search", class: "btn btn-outline-dark mx-2", height: 50 %>
+          </div>
+        <% end %>
       </div>
   </nav>
       <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -23,15 +20,30 @@
         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
         <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
       </ol>
-      <div class="carousel-inner bbb">
-        <div class="carousel-item active">
-          <%= image_tag "coc1.png"%>
+      <div class="carousel-inner">
+        <div class="carousel-item active text-center">
+          <%= image_tag "https://i.pinimg.com/originals/b9/4d/4f/b94d4f336d6cdbbc9332bd15027fd3bc.jpg", height: 600, class: "ccc"%>
+          <div class="carousel-caption d-none d-md-block">
+            <h1 class="display 2">Black tea</h1>
+            <h3>One of the most popular coctails at the moment</h3>
+            <%= link_to "Create your cocktail", new_cocktail_path, class: "btn btn-primary btn-lg" %>
+          </div>
         </div>
-        <div class="carousel-item">
-          <%= image_tag "coc2.png"%>
+        <div class="carousel-item text-center">
+          <%= image_tag "https://www.rhumeriedechamarel.com/wp-content/uploads/2015/10/ORIGINALS-banner.jpg", height: 600, class: "ccc" %>
+          <div class="carousel-caption d-none d-md-block">
+            <h1 class="display 2">Spicy orange</h1>
+            <h3>One of the most popular coctails at the moment</h3>
+            <%= link_to "Create your cocktail", new_cocktail_path, class: "btn btn-success btn-lg border-radius" %>
+          </div>
         </div>
-        <div class="carousel-item">
-         <%= image_tag "coc3.png"%>
+        <div class="carousel-item text-center">
+         <%= image_tag "https://blog.teabox.com/wp-content/uploads/2017/04/STRAWBERRY-SPRITZ_blog-Banner.jpg", height: 600, class: "ccc" %>
+         <div class="carousel-caption d-none d-md-block">
+            <h1 class="display 2">Firing begemoth</h1>
+            <h3>One of the most popular coctails at the moment</h3>
+            <%= link_to "Create your cocktail", new_cocktail_path, class: "btn btn-success btn-lg border-radius" %>
+          </div>
         </div>
       </div>
       <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -43,21 +55,95 @@
         <span class="sr-only">Next</span>
       </a>
     </div>
+    <div class="container-fluid">
+      <div class="row jumbotron">
+        <div class="col-xs-12 cold-sm-12 col-md-9 col-lg-9 col-xl-10">
+          <p class="lead">
+            Here you can find any cocktail of your desires so wait nothing and jump into search you can either try look at our all list or for your convenience you can even search by name or any ingridient.
+          </p>
+          <%= simple_form_for('', url: cocktails_path, method: :get) do |f| %>
+          <div class="form-inline d-flex justify-content-left form-lg mt-0 px-2">
+              <%= f.input :query, label: false, placeholder: "name or ingredient", class: "input-lg" %>
+              <%= f.submit value: "Search", class: "btn btn-outline-dark mx-2"%>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <% if @query %>
+          <p class="lead" style="color: white;">You searched for <strong><%= @query %></strong>. We found <%= @cocktails.count %> cocktails out of our <%= Cocktail.count %> on our website.</p>
+        <% else %>
+          <p class="lead" style="color: white;">All <%= Cocktail.count %> cocktails.</p>
+        <% end %>
+      </div>
+    </div>
     <div class="container">
-      <div class="row py-2 my-2">
+      <div class="row">
         <% @cocktails.each do |cock| %>
-          <div class="col-xs-12 col-sm-4">
-            <div class="card" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.2)), url(<%= cock.image_url %>);">
-              <div card-description>
-                <h2>
-                <%= cock.name %>
-                </h2>
+          <div class="col s12 m3">
+            <div class="card mt-5" style="width: 18rem;">
+              <img class="card-img-top card-image" src='<%= cock.image_url %>' alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title myclass"><%= cock.name %></h5>
+                <%= link_to "Details", cocktail_path(cock), class: "btn btn-outline-secondary" %>
+                <%= link_to "Delete", cocktail_path(cock), class: "btn btn-outline-warning"%>
               </div>
-              <%= link_to "Details", cocktail_path(cock), class: "card-link" %>
             </div>
           </div>
         <% end %>
       </div>
-    <%= link_to "Create your cocktail", new_cocktail_path%>
   </div>
 </div>
+<hr class="my-4">
+<div class="container-fluid padding my-5 h-30">
+  <div class="row text-center padding">
+    <div class="col-12">
+      <h2>Connect</h2>
+    </div>
+    <div class="col-12 social padding">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-google-plus-g"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="container-fluid padding">
+    <div class="row text-center">
+      <div class="col-md-4">
+        <%= image_tag "logo.png", alt: "Creative cocktails", style: 'height:80px;width:80px'%>
+        <hr class="light">
+        <p>555-555-5555</p>
+        <p>email@yemail.com</p>
+        <p>100 Street Name</p>
+        <p>City, State, 00000</p>
+      </div>
+      <div class="col-md-4">
+        <hr class="light">
+        <h5>Our hours</h5>
+        <hr class="light">
+        <p>Monday: 9am - 5pm</p>
+        <p>Saturday: 10am - 4pm</p>
+        <p>Sunday: closed</p>
+      </div>
+      <div class="col-md-4">
+        <hr class="light">
+        <h5>Our hours</h5>
+        <hr class="light">
+        <p>City, State, 00000</p>
+        <p>City, State, 00000</p>
+        <p>City, State, 00000</p>
+        <p>City, State, 00000</p>
+        <p>City, State, 00000</p>
+      </div>
+      <div class="col-12">
+        <hr class="light">
+        <h5>&copy; cocktails.com</h5>
+      </div>
+    </div>
+  </div>
+</footer>

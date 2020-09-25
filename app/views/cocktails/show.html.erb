@@ -1,14 +1,81 @@
-<div class="container">
-  <%= @cocktail.name %>
+<div class="background-page2">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <%= image_tag "logo.png", alt: "Creative cocktails", style: 'height:50px;width:50px'%>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="back mx-3">
+          <%= link_to cocktails_path, class: 'btn btn-secondary' do %>
+            <i class="fas fa-hand-point-left">&nbsp;Back</i>
+          <% end %>
+        </div>
+      </div>
+  </nav>
+  <div class="container">
+    <div class="title">
+      <h1 class="display-1"><%= @cocktail.name %></h1>
+    </div>
+      <div class="row">
+        <div class="col-6">
+          <% if @cocktail.doses.empty? %>
+            <p class="text-gray">
+              No ingredients yet. Add yours!
+            </p>
+            <% else %>
+            <h2 class="display-5">Ingredients</h2>
+            <% @cocktail.doses.each do |d|  %>
+            <ul>
+              <li><%= d.ingredient.name %> <%= d.description %></li>
+              <%= link_to "Delete", dose_path(d), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline-warning"  %>
+            </ul>
+            <% end %>
+          <% end %>
+          <div class="formulaire">
+            <%= simple_form_for([ @cocktail, @dose ]) do |form| %>
+              <%= form.association :ingredient %>
+              <%= form.input :description %>
+              <%= form.button :submit, class: "btn btn-success" %>
+            <% end %>
+          </div>
+        </div>
+        <div class="col-6">
+          <%= image_tag @cocktail.image_url, class: "img-thumbnail" %>
+        </div>
+      </div>
+  </div>
+  <div class="container">
+    <div class="title">
+      <h2 class="display-3">Reviews</h2>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="review my-5">
+        <h4 style="color: black">Reviews</h4>
+        <ul style="padding: 0;list-style: none;color:black">
+          <% @cocktail.reviews.each do |r| %>
+            <li>
+              <% r.rating.times do %>
+                <i class="fas fa-star rating" style="color:#f2b01e;font-style: italic;"></i>
+              <% end %>
+              <% if r.content.present? %>
+                &nbsp;<%= r.content %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      </div>
+      <div class="col-6">
+         <div class="review-form review-hidden my-3">
+          <%= simple_form_for [@cocktail, @review] do |f| %>
+            <%= f.input :rating, collection: 0..5 %>
+            <%= f.input :content %>
+            <%= f.submit class: 'btn btn-success' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-
-<% @cocktail.doses.each do |d|  %>
-    <li><%= d.ingredient.name %> : <%= d.description %> | <%= link_to "Delete", dose_path(d), method: :delete, data: { confirm: "Are you sure?" }  %></li>
-  <% end %>
-
-<%= simple_form_for([ @cocktail, @dose ]) do |form| %>
-    <%= form.association :ingredient %>
-    <%= form.input :description %>
-    <%= form.button :submit, class: "btn btn-success" %>
-<% end %>
-

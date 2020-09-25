@@ -2,10 +2,17 @@ class CocktailsController < ApplicationController
   before_action :set_cocktail, only: [:show, :destroy]
 
   def index
-    @cocktails = Cocktail.all
+    if params[:query].present?
+      @query = params[:query]
+      @cocktails = Cocktail.by_name_or_ingredient(params[:query])
+    else
+      @cocktails = Cocktail.all
+    end
   end
 
   def show
+    @cocktail = Cocktail.find(params[:id])
+    @review = Review.new
     @dose = Dose.new
   end
 
@@ -18,6 +25,7 @@ class CocktailsController < ApplicationController
     if @cocktail.save
       redirect_to cocktail_path(@cocktail)
     else
+      flash[:danger] = @cocktail.errors.full_messages.join(', ')
       render :new
     end
   end
